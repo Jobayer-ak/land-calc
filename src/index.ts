@@ -11,13 +11,12 @@ dotenv.config();
 const app: Application = express();
 
 // CORS configuration
-const allowedOrigins =
-  process.env.NODE_ENV === 'production'
-    ? [
-        process.env.FRONTEND_URL || 'https://your-frontend.vercel.app',
-        'https://your-domain.com',
-      ]
-    : ['http://localhost:3000'];
+const allowedOrigins = [
+  'http://localhost:3000', // Local development
+  'http://localhost:3001', // Alternative local port
+  'https://dancing-lamington-c2a4d4.netlify.app', // Your Netlify frontend
+  process.env.FRONTEND_URL, // Environment variable
+].filter(Boolean);
 
 app.use(
   cors({
