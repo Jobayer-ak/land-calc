@@ -239,6 +239,18 @@ export class AuthController {
     try {
       console.log('🔵 Backend - Verify token called');
 
+      // ✅ Add CORS headers for this specific endpoint
+      res.setHeader(
+        'Access-Control-Allow-Origin',
+        'https://dancing-lamington-c2a4d4.netlify.app',
+      );
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization',
+      );
+
       const authHeader = req.headers.authorization;
       console.log('🔵 Auth header:', authHeader ? 'Present' : 'Missing');
 
