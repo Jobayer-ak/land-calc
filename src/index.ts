@@ -16,7 +16,7 @@ const allowedOrigins = [
   'http://localhost:3001',
   'https://dancing-lamington-c2a4d4.netlify.app',
   process.env.FRONTEND_URL,
-].filter(Boolean);
+].filter((origin): origin is string => Boolean(origin));
 
 // Use simple cors with array
 app.use(
