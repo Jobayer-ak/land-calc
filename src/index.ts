@@ -10,7 +10,7 @@ dotenv.config();
 
 const app: Application = express();
 
-// ✅ FIXED CORS Configuration
+// ✅ SIMPLIFIED CORS - Remove app.options and use simple array
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
@@ -18,39 +18,23 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-// Enable CORS for all routes with proper preflight handling
+// Use simple cors with array
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl)
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log(`❌ CORS blocked: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    exposedHeaders: ['Authorization'],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
-
-// Handle OPTIONS preflight requests explicitly
-app.options('*', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Connect to database
-connectDB();
+// Connect to database with error handling
+connectDB().catch((error) => {
+  console.error('Database connection failed:', error);
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -92,5 +76,4 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-// Export for Vercel serverless function
 export default app;
