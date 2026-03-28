@@ -10,20 +10,34 @@ dotenv.config();
 
 const app: Application = express();
 
-// CORS configuration
+// CORS configuration - FIXED
 const allowedOrigins = [
-  'http://localhost:3000', // Local development
-  'http://localhost:3001', // Alternative local port
-  'https://dancing-lamington-c2a4d4.netlify.app', // Your Netlify frontend
-  process.env.FRONTEND_URL, // Environment variable
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://dancing-lamington-c2a4d4.netlify.app',
+  process.env.FRONTEND_URL,
 ].filter(Boolean);
 
+// ✅ Use function for origin to support credentials
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log(`❌ CORS blocked: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Authorization'],
   }),
 );
 
@@ -69,6 +83,7 @@ if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`📝 Environment: ${process.env.NODE_ENV}`);
+    // console.log(`✅ CORS enabled for:`, allowedOrigins);
   });
 }
 
