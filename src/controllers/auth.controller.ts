@@ -242,7 +242,7 @@ export class AuthController {
       // ✅ Add CORS headers for this specific endpoint
       res.setHeader(
         'Access-Control-Allow-Origin',
-        'https://dancing-lamington-c2a4d4.netlify.app',
+        'https://land-calculation-platform.netlify.app',
       );
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');

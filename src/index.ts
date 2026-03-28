@@ -14,7 +14,7 @@ const app: Application = express();
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://dancing-lamington-c2a4d4.netlify.app',
+  'http://land-calculation-platform.netlify.app',
   process.env.FRONTEND_URL,
 ].filter((origin): origin is string => Boolean(origin));
 
