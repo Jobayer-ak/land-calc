@@ -10,7 +10,7 @@ dotenv.config();
 
 const app: Application = express();
 
-// CORS configuration - FIXED
+// ✅ FIXED CORS Configuration
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
@@ -18,7 +18,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-// ✅ Use function for origin to support credentials
+// Enable CORS for all routes with proper preflight handling
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -35,11 +35,16 @@ app.use(
       }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     exposedHeaders: ['Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   }),
 );
+
+// Handle OPTIONS preflight requests explicitly
+app.options('*', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -83,7 +88,7 @@ if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`📝 Environment: ${process.env.NODE_ENV}`);
-    // console.log(`✅ CORS enabled for:`, allowedOrigins);
+    console.log(`✅ CORS enabled for:`, allowedOrigins);
   });
 }
 
